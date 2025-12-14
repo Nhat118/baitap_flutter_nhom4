@@ -3,14 +3,23 @@ import 'package:flutter/material.dart';
 class MyPlace extends StatelessWidget {
   const MyPlace({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [block1(), block2(), block3(), block4()]),
-    );
-  }
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          block1(),
+          block2(),
+          block3(),
+          block4(),
+        ],
+      ),
+    ),
+  );
+} 
+
 
   Widget block1() {
     var src =

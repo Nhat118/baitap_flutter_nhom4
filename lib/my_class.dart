@@ -16,32 +16,49 @@ class MyClass extends StatelessWidget {
         title: 'XML và ứng dụng - Nhóm 1',
         instructor: 'Dũng Nguyễn',
         students: '50 students',
-        image: 'https://images.unsplash.com/photo-1626117736969-69db1f4aa790?q=80&w=1180&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'assets/images/anh1.jpg',
       ),
       Course(
         title: 'Flutter cơ bản',
         instructor: 'An Bùi',
         students: '120 students',
-        image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'assets/images/anh2.jpg',
       ),
       Course(
         title: 'Lập trình Android nâng cao',
         instructor: 'Minh Trần',
         students: '80 students',
-        image: 'https://images.unsplash.com/photo-1571488740944-f1a0416a45a0?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'assets/images/anh3.jpg',
       ),
       Course(
         title: 'CSDL và SQL',
         instructor: 'Hằng Lê',
         students: '200 students',
-        image: 'https://images.unsplash.com/photo-1677127853510-5f96275c72ba?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'assets/images/anh4.jpg',
       ),
        Course(
         title: 'Toán rời rạc',
         instructor: 'Long Nhật',
         students: '60 students',
-        image:
-            'https://images.unsplash.com/photo-1557750255-c76072a7aad1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image:'assets/images/anh5.jpg',
+      ),
+       Course(
+        title: 'Java nâng cao',
+        instructor: 'Nguyễn Hoàng Hà',
+        students: '40 students',
+        image:'assets/images/anh6.jpg',
+      ),
+      Course(
+        title: 'Đồ án Công nghệ phần mềm',
+        instructor: 'Trần Nguyên Phong',
+        students: '40 students',
+        image:'assets/images/anh7.jpg',
+      ),
+      Course(
+        title: 'Giải tích',
+        instructor: 'Nguyễn Văn Trung',
+        students: '70 students',
+        image:'assets/images/anh8.jpg',
       ),
     ];
 
@@ -61,13 +78,13 @@ class MyClass extends StatelessWidget {
     return Container(
       height: 120,
       padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(top: 0,left: 10,right: 10, bottom: 10),
+      margin: EdgeInsets.only(top: 10,left: 10,right: 10, bottom: 10),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         image: DecorationImage(
           image: NetworkImage(image),
           fit: BoxFit.cover,
-          opacity: 0.6
+          opacity: 0.8
         ),
         borderRadius: BorderRadius.circular(10)
       ),

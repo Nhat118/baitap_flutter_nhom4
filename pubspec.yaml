@@ -63,7 +63,8 @@
     uses-material-design: true
 
     assets:
-      - assets/images/
+    # Dấu gạch ngang thụt vào 2 dấu cách so với assets
+    - assets/images/
 
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg

@@ -21,7 +21,9 @@ class _RegisterState extends State<Register> {
 
   String successMessage = "";
 
-  final RegExp emailReg = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$');
+  // Không phân biệt hoa thường
+  final RegExp emailReg =
+      RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
   @override
   void dispose() {
@@ -46,9 +48,8 @@ class _RegisterState extends State<Register> {
           padding: const EdgeInsets.all(20),
           child: Form(
             key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction, // real-time validation
+            autovalidateMode: AutovalidateMode.disabled,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Họ tên
@@ -57,15 +58,23 @@ class _RegisterState extends State<Register> {
                   decoration: InputDecoration(
                     labelText: 'Họ tên',
                     prefixIcon: const Icon(Icons.person),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZÀ-ỹỲ-ỹà-ỹĐđ\s]")),
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r"[a-zA-ZÀ-ỹĐđ\s]"),
+                    ),
                     LengthLimitingTextInputFormatter(50),
                   ],
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return "Vui lòng nhập họ tên";
-                    if (v.trim().length < 2) return "Họ tên quá ngắn";
+                    if (v == null || v.trim().isEmpty) {
+                      return "Vui lòng nhập họ tên";
+                    }
+                    if (v.trim().length < 2) {
+                      return "Họ tên quá ngắn";
+                    }
                     return null;
                   },
                 ),
@@ -74,19 +83,27 @@ class _RegisterState extends State<Register> {
                 // Email
                 TextFormField(
                   controller: _emailCtrl,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     prefixIcon: const Icon(Icons.email),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  keyboardType: TextInputType.emailAddress,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._\-+]')),
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[a-zA-Z0-9@._\-+]'),
+                    ),
                     LengthLimitingTextInputFormatter(100),
                   ],
                   validator: (v) {
-                    if (v == null || v.isEmpty) return "Vui lòng nhập email";
-                    if (!emailReg.hasMatch(v)) return "Email không hợp lệ";
+                    if (v == null || v.isEmpty) {
+                      return "Vui lòng nhập email";
+                    }
+                    if (!emailReg.hasMatch(v)) {
+                      return "Email không hợp lệ";
+                    }
                     return null;
                   },
                 ),
@@ -96,39 +113,71 @@ class _RegisterState extends State<Register> {
                 TextFormField(
                   controller: _passCtrl,
                   obscureText: _hidePass1,
+                  keyboardType: TextInputType.visiblePassword,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r"\s")),
+                  ],
                   decoration: InputDecoration(
                     labelText: 'Mật khẩu',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
-                      icon: Icon(_hidePass1 ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () => setState(() => _hidePass1 = !_hidePass1),
+                      icon: Icon(
+                        _hidePass1
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() => _hidePass1 = !_hidePass1);
+                      },
                     ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return "Vui lòng nhập mật khẩu";
-                    if (v.length < 6) return "Mật khẩu phải ≥ 6 ký tự";
+                    if (v == null || v.isEmpty) {
+                      return "Vui lòng nhập mật khẩu";
+                    }
+                    if (v.length < 6) {
+                      return "Mật khẩu phải ≥ 6 ký tự";
+                    }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
 
-                // Nhập lại mật khẩu (autovalidateMode sẽ check real-time)
+                // Nhập lại mật khẩu
                 TextFormField(
                   controller: _repassCtrl,
                   obscureText: _hidePass2,
+                  keyboardType: TextInputType.visiblePassword,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r"\s")),
+                  ],
                   decoration: InputDecoration(
                     labelText: 'Nhập lại mật khẩu',
                     prefixIcon: const Icon(Icons.lock_reset),
                     suffixIcon: IconButton(
-                      icon: Icon(_hidePass2 ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () => setState(() => _hidePass2 = !_hidePass2),
+                      icon: Icon(
+                        _hidePass2
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() => _hidePass2 = !_hidePass2);
+                      },
                     ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return "Vui lòng nhập lại mật khẩu";
-                    if (v != _passCtrl.text) return "Mật khẩu không trùng khớp";
+                    if (v == null || v.isEmpty) {
+                      return "Vui lòng nhập lại mật khẩu";
+                    }
+                    if (v != _passCtrl.text) {
+                      return "Mật khẩu không trùng khớp";
+                    }
                     return null;
                   },
                 ),
@@ -139,25 +188,35 @@ class _RegisterState extends State<Register> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightBlue,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
                   onPressed: () {
-                    final valid = _formKey.currentState?.validate() ?? false;
+                    final valid =
+                        _formKey.currentState?.validate() ?? false;
                     setState(() {
-                      successMessage = valid ? "Đăng ký thành công!" : "";
+                      successMessage =
+                          valid ? "Đăng ký thành công!" : "";
                     });
                   },
-                  child: const Text("Đăng ký", style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    "Đăng ký",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
 
                 const SizedBox(height: 12),
 
-                // Thông báo thành công màu xanh dưới nút
                 if (successMessage.isNotEmpty)
                   Text(
                     successMessage,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.green, fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
               ],
             ),

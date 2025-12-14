@@ -89,7 +89,7 @@ class _BMIState extends State<BMI> {
         backgroundColor: Colors.green,
         foregroundColor: Colors.white, // Thêm màu chữ trắng cho đẹp
       ),
-      body: SingleChildScrollView(
+      body: Center(
         child: SingleChildScrollView( // Thêm scroll để tránh lỗi tràn màn hình khi bàn phím hiện
           child: Padding( // Thêm padding tổng thể
             padding: const EdgeInsets.all(16.0),
