@@ -43,7 +43,7 @@ class _MyProfileState extends State<MyProfile> {
                   _buildRowInfo("Họ và Tên:", "Ngô Quý Long Nhật"),
                   _buildRowInfo("Học Phần:", "Lập trình ứng dụng cho các thiết bị di động"),
                   _buildRowInfo("Mã Sinh Viên:", "22T1020284"),
-                  _buildRowInfo("Lớp/Nhóm:", "Nhóm 4"),
+                  _buildRowInfo("Nhóm:", "Nhóm 4"),
                   _buildRowInfo("Giảng Viên:", "ThS. Nguyễn Dũng"),
                 ],
               ),
