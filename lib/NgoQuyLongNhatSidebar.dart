@@ -27,11 +27,7 @@ class NgoQuyLongNhatSidebar extends StatelessWidget {
           ),
           accountEmail: const Text("22T1020284 - Nhóm 4"),
           currentAccountPicture: const CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Text(
-              "LN",
-              style: TextStyle(fontSize: 24, color: Colors.blue),
-            ),
+            backgroundImage: AssetImage('assets/images/avt.jpg'),
           ),
         ),
 

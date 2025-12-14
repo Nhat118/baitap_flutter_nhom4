@@ -25,11 +25,15 @@ class _MyProfileState extends State<MyProfile> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  const Icon(Icons.school, size: 60, color: Colors.blue),
+                  const CircleAvatar(
+                    radius: 60, 
+                    backgroundImage: AssetImage('assets/images/avt.jpg'),
+                    backgroundColor: Colors.transparent, // Màu nền dự phòng nếu ảnh lỗi
+                  ),
+                  
                   const SizedBox(height: 10),
                   Text(
-                    // KHẮC PHỤC 2: Hoặc điền trực tiếp chữ vào đây
-                    "Thông Tin Sinh Viên", 
+                    "Ngô Quý Long Nhật", 
                     style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -40,7 +44,7 @@ class _MyProfileState extends State<MyProfile> {
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 10),
-                  _buildRowInfo("Họ và Tên:", "Ngô Quý Long Nhật"),
+                  // _buildRowInfo("Họ và Tên:", "Ngô Quý Long Nhật"),
                   _buildRowInfo("Học Phần:", "Lập trình ứng dụng cho các thiết bị di động"),
                   _buildRowInfo("Mã Sinh Viên:", "22T1020284"),
                   _buildRowInfo("Nhóm:", "Nhóm 4"),

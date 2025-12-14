@@ -89,13 +89,13 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
         ),
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 10.0),
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Text('LN', style: TextStyle(color: Colors.blue)),
-                ),
+                radius: 20,
+                backgroundImage: AssetImage('assets/images/avt.jpg'),
+              ),
               ],
             ),
           ),
@@ -103,7 +103,6 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
       ),
       drawer: Drawer(
         width: 300,
-        // Sửa tên class cho khớp với đoạn code 2 (chữ Q, L, N viết hoa)
         child: NgoQuyLongNhatSidebar( 
           assignments: assignmentWidgets.keys.toList(),
           selectedKey: _selectedAssignmentKey,
