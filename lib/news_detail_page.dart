@@ -40,6 +40,7 @@ class NewsDetailPage extends StatelessWidget {
             ),
 
             /// NỘI DUNG
+            SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
@@ -49,9 +50,9 @@ class NewsDetailPage extends StatelessWidget {
                   topRight: Radius.circular(30),
                 ),
               ),
-              transform: Matrix4.translationValues(0, -20, 0),
+              
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Center(
                     child: Container(
@@ -94,7 +95,7 @@ class NewsDetailPage extends StatelessWidget {
                         ? news.shortDesc
                         : news.content,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       height: 1.6,
                     ),
                   ),
