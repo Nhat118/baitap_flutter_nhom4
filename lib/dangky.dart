@@ -21,7 +21,6 @@ class _RegisterState extends State<Register> {
 
   String successMessage = "";
 
-  // Không phân biệt hoa thường
   final RegExp emailReg =
       RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
@@ -48,6 +47,7 @@ class _RegisterState extends State<Register> {
           padding: const EdgeInsets.all(20),
           child: Form(
             key: _formKey,
+            // 1. TẮT chế độ tự kiểm tra của cả form (để các ô khác không bị đỏ lòm khi đang gõ)
             autovalidateMode: AutovalidateMode.disabled,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -63,18 +63,12 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                      RegExp(r"[a-zA-ZÀ-ỹĐđ\s]"),
-                    ),
+                    FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZÀ-ỹĐđ\s]")),
                     LengthLimitingTextInputFormatter(50),
                   ],
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) {
-                      return "Vui lòng nhập họ tên";
-                    }
-                    if (v.trim().length < 2) {
-                      return "Họ tên quá ngắn";
-                    }
+                    if (v == null || v.trim().isEmpty) return "Vui lòng nhập họ tên";
+                    if (v.trim().length < 2) return "Họ tên quá ngắn";
                     return null;
                   },
                 ),
@@ -92,18 +86,12 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                      RegExp(r'[a-zA-Z0-9@._\-+]'),
-                    ),
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._\-+]')),
                     LengthLimitingTextInputFormatter(100),
                   ],
                   validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return "Vui lòng nhập email";
-                    }
-                    if (!emailReg.hasMatch(v)) {
-                      return "Email không hợp lệ";
-                    }
+                    if (v == null || v.isEmpty) return "Vui lòng nhập email";
+                    if (!emailReg.hasMatch(v)) return "Email không hợp lệ";
                     return null;
                   },
                 ),
@@ -117,30 +105,26 @@ class _RegisterState extends State<Register> {
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(RegExp(r"\s")),
                   ],
+                  // 2. Khi sửa mật khẩu gốc, báo cho giao diện biết để ô nhập lại tự check lại
+                  onChanged: (value) {
+                    if (_repassCtrl.text.isNotEmpty) {
+                       setState(() {}); 
+                    }
+                  },
                   decoration: InputDecoration(
                     labelText: 'Mật khẩu',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _hidePass1
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() => _hidePass1 = !_hidePass1);
-                      },
+                      icon: Icon(_hidePass1 ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () => setState(() => _hidePass1 = !_hidePass1),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return "Vui lòng nhập mật khẩu";
-                    }
-                    if (v.length < 6) {
-                      return "Mật khẩu phải ≥ 6 ký tự";
-                    }
+                    if (v == null || v.isEmpty) return "Vui lòng nhập mật khẩu";
+                    if (v.length < 6) return "Mật khẩu phải ≥ 6 ký tự";
                     return null;
                   },
                 ),
@@ -151,6 +135,10 @@ class _RegisterState extends State<Register> {
                   controller: _repassCtrl,
                   obscureText: _hidePass2,
                   keyboardType: TextInputType.visiblePassword,
+                  
+                  // 3. CHỈ BẬT kiểm tra tự động ở riêng ô này
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(RegExp(r"\s")),
                   ],
@@ -158,26 +146,17 @@ class _RegisterState extends State<Register> {
                     labelText: 'Nhập lại mật khẩu',
                     prefixIcon: const Icon(Icons.lock_reset),
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _hidePass2
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() => _hidePass2 = !_hidePass2);
-                      },
+                      icon: Icon(_hidePass2 ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () => setState(() => _hidePass2 = !_hidePass2),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return "Vui lòng nhập lại mật khẩu";
-                    }
-                    if (v != _passCtrl.text) {
-                      return "Mật khẩu không trùng khớp";
-                    }
+                    // Logic kiểm tra
+                    if (v == null || v.isEmpty) return "Vui lòng nhập lại mật khẩu";
+                    if (v != _passCtrl.text) return "Mật khẩu không trùng khớp";
                     return null;
                   },
                 ),
@@ -193,11 +172,10 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   onPressed: () {
-                    final valid =
-                        _formKey.currentState?.validate() ?? false;
+                    // Khi ấn nút mới kiểm tra toàn bộ (Họ tên, Email...)
+                    final valid = _formKey.currentState?.validate() ?? false;
                     setState(() {
-                      successMessage =
-                          valid ? "Đăng ký thành công!" : "";
+                      successMessage = valid ? "Đăng ký thành công!" : "";
                     });
                   },
                   child: const Text(

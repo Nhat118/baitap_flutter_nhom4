@@ -82,7 +82,7 @@ class MyClass extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         image: DecorationImage(
-          image: NetworkImage(image),
+          image: AssetImage(image),
           fit: BoxFit.cover,
           opacity: 0.8
         ),

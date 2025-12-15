@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// Import các bài tập của bạn
+
+// --- IMPORT CÁC BÀI TẬP CỦA BẠN ---
 import 'guide_to_layout.dart';
 import 'my_class.dart';
 import 'my_place.dart';
@@ -14,12 +15,12 @@ import 'my_product.dart';
 import 'form_dangnhap.dart';
 import 'dang_nhap.dart';
 import 'NgoQuyLongNhatProfile.dart';
-import 'NgoQuyLongNhatSidebar.dart';
 import 'new_list_page.dart';
-// Map ánh xạ bài tập
+
+// --- MAP ÁNH XẠ BÀI TẬP ---
 final Map<String, Widget> assignmentWidgets = {
-  'My Home Page': const MyHomePage(),
-  'Layout Guide': const GuideToLayout(),
+  'Hello World': const MyHomePage(),
+  'Layout': const GuideToLayout(),
   'My Class': const MyClass(),
   'My Place': const MyPlace(),
   'Đổi Màu Nền': const ColorChanger(),
@@ -34,8 +35,16 @@ final Map<String, Widget> assignmentWidgets = {
   'Đăng Nhập API': LoginAPI(),
 };
 
+// --- WIDGET CHÍNH (MÀN HÌNH) ---
 class Ngoquylongnhat extends StatefulWidget {
-  const Ngoquylongnhat({super.key});
+  final bool isDark;
+  final VoidCallback onToggleTheme;
+
+  const Ngoquylongnhat({
+    super.key, 
+    required this.isDark, 
+    required this.onToggleTheme
+  });
 
   @override
   State<Ngoquylongnhat> createState() => _NgoquylongnhatState();
@@ -80,22 +89,27 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
         leading: isHomePage
             ? null
             : IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            setState(() {
-              _selectedAssignmentKey = 'Trang Chủ';
-            });
-          },
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 10.0),
-            child: Row(
-              children: [
-                CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage('assets/images/avt.jpg'),
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    _selectedAssignmentKey = 'Trang Chủ';
+                  });
+                },
               ),
+        actions: [
+          IconButton(
+            tooltip: widget.isDark ? 'Chuyển sang sáng' : 'Chuyển sang tối',
+            icon: Icon(widget.isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: widget.onToggleTheme,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Row(
+              children: const [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: AssetImage('assets/images/avt.jpg'),
+                ),
               ],
             ),
           ),
@@ -103,87 +117,115 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
       ),
       drawer: Drawer(
         width: 300,
-        child: NgoQuyLongNhatSidebar( 
+        // Đặt màu nền cho Drawer để phù hợp với chế độ tối
+        backgroundColor: widget.isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        child: NgoQuyLongNhatSidebar(
           assignments: assignmentWidgets.keys.toList(),
           selectedKey: _selectedAssignmentKey,
           onSelect: _selectAssignment,
+          isDark: widget.isDark, // Truyền biến isDark xuống Sidebar
         ),
       ),
       body: Container(
-        color: Colors.grey.shade50,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: _currentContent,
       ),
     );
   }
 }
 
-class NgoquylongnhatSidebar extends StatelessWidget {
+// --- WIDGET SIDEBAR (ĐÃ GỘP VÀ CẬP NHẬT LOGIC MÀU SẮC) ---
+class NgoQuyLongNhatSidebar extends StatelessWidget {
   final List<String> assignments;
   final String selectedKey;
   final Function(String) onSelect;
+  final bool isDark; // Nhận biến isDark để chỉnh màu
 
-  const NgoquylongnhatSidebar({
+  const NgoQuyLongNhatSidebar({
+    super.key,
     required this.assignments,
     required this.selectedKey,
     required this.onSelect,
+    required this.isDark, // Bắt buộc truyền vào
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero,
+    // Định nghĩa màu sắc dựa trên isDark
+    final Color normalTextColor = isDark ? Colors.white : Colors.black87;
+    final Color normalIconColor = isDark ? Colors.white70 : Colors.grey;
+    final Color selectedTextColor = isDark ? Colors.lightBlueAccent : Colors.blue.shade900;
+    final Color selectedTileColor = isDark ? Colors.blue.withOpacity(0.2) : Colors.blue.shade50;
+    final Color footerColor = isDark ? Colors.grey.shade400 : Colors.grey;
+
+    return Column(
       children: [
-        DrawerHeader(
+        // Phần Header "Xịn sò" có Avatar và info
+        UserAccountsDrawerHeader(
           decoration: BoxDecoration(
             color: Colors.blue.shade800,
           ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+          accountName: const Text(
+            "Ngô Quý Long Nhật",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          accountEmail: const Text("22T1020284 - Nhóm 4"),
+          currentAccountPicture: const CircleAvatar(
+            backgroundImage: AssetImage('assets/images/avt.jpg'),
+          ),
+        ),
+
+        // Danh sách cuộn
+        Expanded(
+          child: ListView(
+            padding: EdgeInsets.zero,
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 30,
-                child: Text(
-                  'LN',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+              // Nút về Trang Chủ
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text("Trang Chủ (My Profile)"),
+                selected: selectedKey == 'Trang Chủ',
+                selectedTileColor: selectedTileColor,
+                // Chỉnh màu chữ/icon theo trạng thái
+                textColor: selectedKey == 'Trang Chủ' ? selectedTextColor : normalTextColor,
+                iconColor: selectedKey == 'Trang Chủ' ? selectedTextColor : normalTextColor,
+                onTap: () => onSelect('Trang Chủ'),
+              ),
+              Divider(color: isDark ? Colors.white24 : Colors.grey.shade300),
+
+              // Danh sách các bài tập
+              ...assignments.map((key) {
+                final bool isActive = key == selectedKey;
+                return ListTile(
+                  leading: Icon(
+                    isActive ? Icons.folder_open : Icons.folder,
+                    // Màu icon
+                    color: isActive ? selectedTextColor : normalIconColor,
                   ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Ngô Quý Long Nhật',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '22T1020284',
-                style: TextStyle(color: Colors.white70, fontSize: 12),
-              ),
+                  title: Text(
+                    key,
+                    style: TextStyle(
+                      fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                      // Màu chữ
+                      color: isActive ? selectedTextColor : normalTextColor,
+                    ),
+                  ),
+                  tileColor: isActive ? selectedTileColor : null,
+                  onTap: () => onSelect(key),
+                );
+              }).toList(),
             ],
           ),
         ),
-        ListTile(
-          leading: const Icon(Icons.home),
-          title: const Text('Trang Chủ'),
-          selected: selectedKey == 'Trang Chủ',
-          onTap: () => onSelect('Trang Chủ'),
+
+        // Footer nhỏ
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            "Ver 1.0 - Bài tập Flutter Nhóm 4",
+            style: TextStyle(color: footerColor, fontSize: 12),
+          ),
         ),
-        const Divider(),
-        ...assignments.map((assignment) {
-          return ListTile(
-            leading: const Icon(Icons.assignment),
-            title: Text(assignment),
-            selected: selectedKey == assignment,
-            onTap: () => onSelect(assignment),
-          );
-        }).toList(),
       ],
     );
   }
