@@ -35,6 +35,24 @@ final Map<String, Widget> assignmentWidgets = {
   'Đăng Nhập API': LoginAPI(),
 };
 
+// --- MAP ICON VÀ MÀU CHO MỖI BÀI TẬP ---
+final Map<String, Map<String, dynamic>> assignmentConfig = {
+  'Hello World': {'icon': Icons.public, 'colors': [Color(0xFF667EEA), Color(0xFF764BA2)]},
+  'Layout': {'icon': Icons.dashboard, 'colors': [Color(0xFFF093FB), Color(0xFFF5576C)]},
+  'My Class': {'icon': Icons.school, 'colors': [Color(0xFF4FACFE), Color(0xFF00F2FE)]},
+  'My Place': {'icon': Icons.place, 'colors': [Color(0xFFFA709A), Color(0xFFFECE34)]},
+  'Đổi Màu Nền': {'icon': Icons.palette, 'colors': [Color(0xFFA8EDEA), Color(0xFFFED6E3)]},
+  'Tính BMI': {'icon': Icons.favorite, 'colors': [Color(0xFFFF9A56), Color(0xFFFF6A88)]},
+  'Đếm Số': {'icon': Icons.numbers, 'colors': [Color(0xFF30B0FE), Color(0xFF5A29E8)]},
+  'Đếm thời gian': {'icon': Icons.timer, 'colors': [Color(0xFFFFA630), Color(0xFFFF6B6B)]},
+  'Đăng Ký': {'icon': Icons.app_registration, 'colors': [Color(0xFF11998E), Color(0xFF38EF7D)]},
+  'Form Đăng Nhập': {'icon': Icons.login, 'colors': [Color(0xFF667eea), Color(0xFF764ba2)]},
+  'Phản hồi': {'icon': Icons.feedback, 'colors': [Color(0xFFf093fb), Color(0xFFf5576c)]},
+  'Cửa Hàng': {'icon': Icons.shopping_cart, 'colors': [Color(0xFF4facfe), Color(0xFF00f2fe)]},
+  'Tin Tức': {'icon': Icons.newspaper, 'colors': [Color(0xFFfa709a), Color(0xFFfece34)]},
+  'Đăng Nhập API': {'icon': Icons.api, 'colors': [Color(0xFF43e97b), Color(0xFF38f9d7)]},
+};
+
 // --- WIDGET CHÍNH (MÀN HÌNH) ---
 class Ngoquylongnhat extends StatefulWidget {
   final bool isDark;
@@ -65,12 +83,151 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
   // Widget hiển thị nội dung
   Widget get _currentContent {
     if (_selectedAssignmentKey == 'Trang Chủ') {
-      return const MyProfile();
+      return _buildHomePageWithAssignments();
     }
     if (assignmentWidgets.containsKey(_selectedAssignmentKey)) {
       return assignmentWidgets[_selectedAssignmentKey]!;
     }
     return const Center(child: Text("Không tìm thấy nội dung"));
+  }
+
+  // Trang chủ với profile + danh sách bài tập
+  Widget _buildHomePageWithAssignments() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Profile
+          const MyProfile(),
+          
+          // Divider với hiệu ứng
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+            child: Column(
+              children: [
+                Divider(thickness: 2, color: Theme.of(context).dividerColor),
+                const SizedBox(height: 8),
+                Text(
+                  'Các Bài Tập',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.titleLarge?.color,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Divider(thickness: 2, color: Theme.of(context).dividerColor),
+              ],
+            ),
+          ),
+          
+          // Grid danh sách bài tập với hiệu ứng
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.1,
+              ),
+              itemCount: assignmentWidgets.length,
+              itemBuilder: (context, index) {
+                final key = assignmentWidgets.keys.toList()[index];
+                return _buildAssignmentCard(key, index);
+              },
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  // Card cho mỗi bài tập với animation
+  Widget _buildAssignmentCard(String title, int index) {
+    final config = assignmentConfig[title] ?? {'icon': Icons.assignment, 'colors': [Colors.blue.shade400, Colors.blue.shade600]};
+    final colors = config['colors'] as List<Color>;
+    final icon = config['icon'] as IconData;
+
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: 500 + (index * 100)),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: Opacity(
+            opacity: value,
+            child: child,
+          ),
+        );
+      },
+      child: GestureDetector(
+        onTap: () => _selectAssignment(title),
+        child: Card(
+          elevation: 6,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: colors,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.first.withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: InkWell(
+              onTap: () => _selectAssignment(title),
+              borderRadius: BorderRadius.circular(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.25),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      icon,
+                      size: 28,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
