@@ -72,12 +72,11 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
   // Mặc định là 'Trang Chủ'
   String _selectedAssignmentKey = 'Trang Chủ';
 
+  // --- SỬA LẠI HÀM NÀY: Bỏ dòng Navigator.pop() đi ---
   void _selectAssignment(String key) {
     setState(() {
       _selectedAssignmentKey = key;
     });
-    // Đóng Sidebar sau khi chọn
-    Navigator.of(context).pop();
   }
 
   // Widget hiển thị nội dung
@@ -120,12 +119,12 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
             ),
           ),
           
-          // Grid danh sách bài tập với hiệu ứng
+          // Grid danh sách bài tập
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: GridView.builder(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(), // Quan trọng để cuộn cùng Profile
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
@@ -146,7 +145,6 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
     );
   }
 
-  // Card cho mỗi bài tập với animation
   Widget _buildAssignmentCard(String title, int index) {
     final config = assignmentConfig[title] ?? {'icon': Icons.assignment, 'colors': [Colors.blue.shade400, Colors.blue.shade600]};
     final colors = config['colors'] as List<Color>;
@@ -165,64 +163,62 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
           ),
         );
       },
-      child: GestureDetector(
-        onTap: () => _selectAssignment(title),
-        child: Card(
-          elevation: 6,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: colors,
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: colors,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colors.first.withOpacity(0.4),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.first.withOpacity(0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
+            ],
+          ),
+          child: InkWell(
+            // --- GỌI HÀM SELECT Ở ĐÂY (Không Pop) ---
+            onTap: () => _selectAssignment(title),
+            borderRadius: BorderRadius.circular(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.25),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                 ),
               ],
-            ),
-            child: InkWell(
-              onTap: () => _selectAssignment(title),
-              borderRadius: BorderRadius.circular(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      icon,
-                      size: 28,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),
@@ -232,7 +228,6 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
 
   @override
   Widget build(BuildContext context) {
-    // Biến kiểm tra xem có đang ở trang chủ không
     bool isHomePage = _selectedAssignmentKey == 'Trang Chủ';
 
     return Scaffold(
@@ -243,14 +238,13 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
         ),
         backgroundColor: Colors.blue.shade800,
         foregroundColor: Colors.white,
+        // Nút Back chỉ hiện khi không phải trang chủ
         leading: isHomePage
-            ? null
+            ? null // Để mặc định hiện nút Menu (Hamburger)
             : IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  setState(() {
-                    _selectedAssignmentKey = 'Trang Chủ';
-                  });
+                  _selectAssignment('Trang Chủ'); // Quay về trang chủ
                 },
               ),
         actions: [
@@ -274,13 +268,16 @@ class _NgoquylongnhatState extends State<Ngoquylongnhat> {
       ),
       drawer: Drawer(
         width: 300,
-        // Đặt màu nền cho Drawer để phù hợp với chế độ tối
         backgroundColor: widget.isDark ? const Color(0xFF1E1E1E) : Colors.white,
         child: NgoQuyLongNhatSidebar(
           assignments: assignmentWidgets.keys.toList(),
           selectedKey: _selectedAssignmentKey,
-          onSelect: _selectAssignment,
-          isDark: widget.isDark, // Truyền biến isDark xuống Sidebar
+          // --- SỬA LẠI LOGIC KHI CHỌN TỪ SIDEBAR ---
+          onSelect: (key) {
+            _selectAssignment(key); // Chọn bài
+            Navigator.of(context).pop(); // Đóng Sidebar thủ công tại đây
+          },
+          isDark: widget.isDark,
         ),
       ),
       body: Container(
